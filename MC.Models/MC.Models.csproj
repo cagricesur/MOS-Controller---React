@@ -7,8 +7,37 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Response\" />
-    <Folder Include="Request\" />
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="AddResourceResponse.ts">
+      <CustomToolNamespace>Response\AddResourceResponse.cs</CustomToolNamespace>
+    </None>
+    <None Update="AddUserResponse.ts">
+      <CustomToolNamespace>Response\AddUserResponse.cs</CustomToolNamespace>
+    </None>
+    <None Update="AuthenticationRequest.ts">
+      <CustomToolNamespace>Request\AuthenticationRequest.cs</CustomToolNamespace>
+    </None>
+    <None Update="BaseRequest.ts">
+      <CustomToolNamespace>Base\BaseRequest.cs</CustomToolNamespace>
+    </None>
+    <None Update="GetResourcesRequest.ts">
+      <CustomToolNamespace>Request\GetResourcesRequest.cs</CustomToolNamespace>
+    </None>
+    <None Update="GetUserRequest.ts">
+      <CustomToolNamespace>Request\GetUserRequest.cs</CustomToolNamespace>
+    </None>
+    <None Update="ListUsersRequest.ts">
+      <CustomToolNamespace>Request\ListUsersRequest.cs</CustomToolNamespace>
+    </None>
+    <None Update="UpdateUserRequest.ts">
+      <CustomToolNamespace>Request\UpdateUserRequest.cs</CustomToolNamespace>
+    </None>
+    <None Update="User.ts">
+      <CustomToolNamespace>Entities\User.cs</CustomToolNamespace>
+    </None>
   </ItemGroup>
 
 </Project>

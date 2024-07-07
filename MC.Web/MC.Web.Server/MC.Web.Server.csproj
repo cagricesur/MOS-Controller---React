@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <InvariantGlobalization>true</InvariantGlobalization>
+    <InvariantGlobalization>false</InvariantGlobalization>
     <SpaRoot>..\MC.Web.Client</SpaRoot>
     <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
     <SpaProxyServerUrl>https://localhost:5173</SpaProxyServerUrl>
@@ -18,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\MC.Core\MC.Core.csproj" />
+    <ProjectReference Include="..\..\MC.Data\MC.Data.csproj" />
+    <ProjectReference Include="..\..\MC.Models\MC.Models.csproj" />
+    <ProjectReference Include="..\..\MC.Utils\MC.Utils.csproj" />
     <ProjectReference Include="..\MC.Web.Client\MC.Web.Client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>

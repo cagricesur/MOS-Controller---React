@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MC.Models.Attributes;
 
 namespace MC.Models.Entities
 {
+    [TsClass]
     public class Error
     {
-        public string? Message { get; set; }
-        public string? Code { get; set; }
+        public required string Code { get; set; }
     }
 }

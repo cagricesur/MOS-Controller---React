@@ -1,11 +1,19 @@
-﻿namespace MC.Models
+﻿using MC.Models.Attributes;
+
+namespace MC.Models
 {
-    public enum CrudOperationEnum
+    [TsEnum]
+    public enum UserStatusEnum
     {
         Unknown,
-        Add,
-        Update,
-        Delete,
-        List
+        Active,
+        Passive        
+    }
+    [TsEnum]
+    public enum UserRoleEnum
+    {
+        Unknown,
+        Administrator,
+        Member
     }
 }
