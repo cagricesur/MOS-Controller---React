@@ -162,7 +162,6 @@ const NewState: React.FunctionComponent = () => {
   return (
     <>
       <Drawer
-        title={t("NewState*Remove*Column")}
         placement="bottom"
         closeIcon={null}
         footer={

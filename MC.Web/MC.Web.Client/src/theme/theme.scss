@@ -36,11 +36,11 @@ body {
       }
     }
     &.mc-auth {
-      // > div {
-      //   .mc-auth-form {
-      //     max-width: 300px;
-      //   }
-      // }
+      > div {
+        .mc-auth-form {
+          max-width: 300px;
+        }
+      }
       display: flex;
       align-items: center;
       justify-content: center;

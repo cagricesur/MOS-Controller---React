@@ -45,7 +45,6 @@ const StateList: React.FunctionComponent = () => {
           onClick={(event) => {
             event.stopPropagation();
             modal.confirm({
-              title: t("StateList*Delete*Title"),
               content: t("StateList*Delete*Content"),
               okType: "danger",
               okText: t("StateList*Delete*OkButton"),
@@ -74,7 +73,9 @@ const StateList: React.FunctionComponent = () => {
     date.locale(i18n.language === "tr" ? "tr" : "en-gb");
     return (
       <Flex vertical gap={4}>
-        {state.description && <div>{state.description}</div>}
+        {state.description && (
+          <Typography.Text ellipsis>{state.description}</Typography.Text>
+        )}
         <div>{`${date.format("DD MMM YYYY")} | ${state.codeStart} - ${
           state.codeEnd
         }`}</div>
@@ -109,7 +110,7 @@ const StateList: React.FunctionComponent = () => {
                   <Card.Meta
                     avatar={<FaDiceD6 size={36} />}
                     title={
-                      <Typography.Title level={3}>
+                      <Typography.Title level={3} ellipsis>
                         {state.caption}
                       </Typography.Title>
                     }

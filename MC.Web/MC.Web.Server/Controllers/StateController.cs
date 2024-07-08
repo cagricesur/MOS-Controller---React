@@ -64,11 +64,11 @@ namespace MC.Web.Server.Controllers
                 var suffix = await configService.GetConfig("SystemSuffix");
                 if (prefix != null)
                 {
-                    arr = arr.Select(code => string.Join("-", prefix, code)).ToArray();
+                    arr = arr.Select(code => string.Join(" ", prefix, code)).ToArray();
                 }
                 if (suffix != null)
                 {
-                    arr = arr.Select(code => string.Join("-", code, suffix)).ToArray();
+                    arr = arr.Select(code => string.Join(" ", code, suffix)).ToArray();
                 }
                 foreach (var code in arr)
                 {

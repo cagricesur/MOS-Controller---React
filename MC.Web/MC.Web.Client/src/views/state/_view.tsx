@@ -43,6 +43,7 @@ const ViewState: React.FunctionComponent = () => {
             shape="circle"
             icon={<FaDatabase />}
             style={{ width: 48, height: 48 }}
+            onClick={() => push("9902")}
           ></Button>
           <Typography.Title level={3} style={{ marginBlock: 0 }}>
             {state.caption}
@@ -51,6 +52,7 @@ const ViewState: React.FunctionComponent = () => {
             shape="circle"
             icon={<FaRegCircle />}
             style={{ width: 48, height: 48 }}
+            onClick={() => push("9901")}
           ></Button>
         </Flex>
       ),

@@ -58,7 +58,7 @@ namespace MC.Core.Services
                 {
                     ID = Guid.NewGuid(),
                     UserID = userId,
-                    Status = (short)(request.Status ?? UserStatusEnum.Passive)
+                    Status = (short)(UserStatusEnum.Active)
                 });
 
                 var password = isRegistration ? request.Password! : await configService.GetConfig(Constants.ConfigKeys.DefaultMemberPassword, Constants.AppConstants.DefaultMemberPassword);

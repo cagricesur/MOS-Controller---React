@@ -130,11 +130,13 @@ const Configs: React.FunctionComponent = () => {
                   <Card.Meta
                     avatar={<FaGear size={36} />}
                     title={
-                      <Typography.Title level={3}>
+                      <Typography.Title level={3} ellipsis>
                         {config.key}
                       </Typography.Title>
                     }
-                    description={config.value}
+                    description={
+                      <Typography.Text ellipsis>{config.key}</Typography.Text>
+                    }
                   ></Card.Meta>
                 </Card>
               </List.Item>

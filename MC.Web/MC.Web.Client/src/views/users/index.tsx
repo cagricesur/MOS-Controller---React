@@ -46,8 +46,8 @@ const UserDetail: React.FunctionComponent<UserDetailProps> = (props) => {
   return (
     <Flex vertical justify="center" align="center" gap={16}>
       <FaUserCircle size={48}></FaUserCircle>
-      <Typography.Text>{user.firstName}</Typography.Text>
-      <Typography.Text>{user.lastName}</Typography.Text>
+      <Typography.Text ellipsis>{user.firstName}</Typography.Text>
+      <Typography.Text ellipsis>{user.lastName}</Typography.Text>
       <UserStatusSwitch
         user={user}
         onChange={(_status) => {
@@ -194,11 +194,15 @@ const Users: React.FunctionComponent = () => {
                     <Card.Meta
                       avatar={<FaUser size={36} />}
                       title={
-                        <Typography.Title level={3}>
+                        <Typography.Title level={3} ellipsis>
                           {user.userName}
                         </Typography.Title>
                       }
-                      description={`${user.firstName} ${user.lastName}`}
+                      description={
+                        <Typography.Text
+                          ellipsis
+                        >{`${user.firstName} ${user.lastName}`}</Typography.Text>
+                      }
                     ></Card.Meta>
                   </Card>
                 </Badge.Ribbon>
