@@ -64,17 +64,10 @@ namespace MC.Web.Server.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Administrator")]
-        public async Task<GetConfigsResponse> GetConfigs()
+        public Task<GetConfigsResponse> GetConfigs()
         {
-            var configs = await configService.GetConfigs();
-            return new GetConfigsResponse
-            {
-                Configs = configs.Select(kvp => new Models.Entities.Config()
-                {
-                    Key = kvp.Key,
-                    Value = kvp.Value
-                }).ToList()
-            };
+            return configService.GetConfigs();
+
         }
 
         [HttpPost]

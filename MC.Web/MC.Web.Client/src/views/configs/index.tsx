@@ -59,45 +59,50 @@ const Configs: React.FunctionComponent = () => {
           setDrawerOpen(false);
         }}
       >
-        <Form form={form} onFinish={onFinish} onReset={onReset}>
-          <Form.Item
-            name="key"
-            label={t("Config*Edit*KeyLabel")}
-            initialValue={config?.key}
-            required={false}
-          >
-            <Input disabled placeholder={t("Config*Edit*KeyLabel")}></Input>
-          </Form.Item>
-          <Form.Item
-            name="value"
-            label={t("Config*Value*KeyLabel")}
-            initialValue={config?.value}
-            required={false}
-            rules={[
-              {
-                required: true,
-                message: t("Configs*ValueRequiredMessage"),
-              },
-            ]}
-          >
-            <Input placeholder={t("Config*Value*KeyLabel")}></Input>
-          </Form.Item>
-          <Form.Item className="fi-control-mt-30">
-            <Flex gap={16}>
-              <Button
-                block
-                icon={<FaX color="#8b0000" />}
-                htmlType="reset"
-              ></Button>
+        <Flex vertical gap={16}>
+          {config?.description && (
+            <Typography.Text ellipsis>{config.description}</Typography.Text>
+          )}
+          <Form form={form} onFinish={onFinish} onReset={onReset}>
+            <Form.Item
+              name="key"
+              label={t("Config*Edit*KeyLabel")}
+              initialValue={config?.key}
+              required={false}
+            >
+              <Input disabled placeholder={t("Config*Edit*KeyLabel")}></Input>
+            </Form.Item>
+            <Form.Item
+              name="value"
+              label={t("Config*Value*KeyLabel")}
+              initialValue={config?.value}
+              required={false}
+              rules={[
+                {
+                  required: true,
+                  message: t("Configs*ValueRequiredMessage"),
+                },
+              ]}
+            >
+              <Input placeholder={t("Config*Value*KeyLabel")}></Input>
+            </Form.Item>
+            <Form.Item className="fi-control-mt-30">
+              <Flex gap={16}>
+                <Button
+                  block
+                  icon={<FaX color="#8b0000" />}
+                  htmlType="reset"
+                ></Button>
 
-              <Button
-                block
-                icon={<FaCheck color="#008b00" />}
-                htmlType="submit"
-              ></Button>
-            </Flex>
-          </Form.Item>
-        </Form>
+                <Button
+                  block
+                  icon={<FaCheck color="#008b00" />}
+                  htmlType="submit"
+                ></Button>
+              </Flex>
+            </Form.Item>
+          </Form>
+        </Flex>
       </Drawer>
       {configs.length === 0 ? (
         <Empty
@@ -135,7 +140,16 @@ const Configs: React.FunctionComponent = () => {
                       </Typography.Title>
                     }
                     description={
-                      <Typography.Text ellipsis>{config.key}</Typography.Text>
+                      <Flex vertical gap={16}>
+                        {config.description && (
+                          <Typography.Text ellipsis>
+                            {config.description}
+                          </Typography.Text>
+                        )}
+                        <Typography.Text ellipsis>
+                          {config.value}
+                        </Typography.Text>
+                      </Flex>
                     }
                   ></Card.Meta>
                 </Card>

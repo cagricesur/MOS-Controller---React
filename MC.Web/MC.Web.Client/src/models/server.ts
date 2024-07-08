@@ -37,6 +37,7 @@
         
         key:string;
         value:string;
+        description?:string;
     }
     export interface Error {
         

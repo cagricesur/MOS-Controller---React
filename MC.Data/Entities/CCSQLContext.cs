@@ -38,6 +38,7 @@ public partial class CCSQLContext : DbContext
             entity.ToTable("Config", "MC");
 
             entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.Property(e => e.Description).HasMaxLength(100);
             entity.Property(e => e.Key)
                 .IsRequired()
                 .HasMaxLength(50);

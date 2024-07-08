@@ -78,7 +78,7 @@ const Login: React.FunctionComponent = () => {
               labelCol={{ span: 24 }}
             >
               <Form.Item
-                initialValue="Admin"
+                // initialValue="Admin"
                 name="userName"
                 label={t("Login*UserName")}
                 required={false}
@@ -92,7 +92,7 @@ const Login: React.FunctionComponent = () => {
                 <Input prefix={<FaUser />} placeholder={t("Login*UserName")} />
               </Form.Item>
               <Form.Item
-                initialValue="Admin1234*"
+                // initialValue="Admin1234*"
                 name="password"
                 label={t("Login*Password")}
                 required={false}

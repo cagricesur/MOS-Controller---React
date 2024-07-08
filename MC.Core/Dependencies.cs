@@ -4,7 +4,6 @@ using MC.Data.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace MC.Core
 {
@@ -37,7 +36,8 @@ namespace MC.Core
         {
             return services
                  .AddSingleton<IWebSocketManager, WebSocketManager>()
-                 .AddSingleton<IWebSocketMessageManager, WebSocketMessageManager>();
+                 .AddSingleton<IWebSocketMessageManager, WebSocketMessageManager>()
+                 .AddHostedService<WebSocketBackgroundService>();
         }
         public static IApplicationBuilder UseWebSocketSupport(this IApplicationBuilder app)
         {

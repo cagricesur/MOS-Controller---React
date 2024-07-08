@@ -8,7 +8,7 @@ namespace MC.Core.Services
 {
     public interface IConfigService
     {
-        public Task<Dictionary<string, string>> GetConfigs();
+        public Task<GetConfigsResponse> GetConfigs();
         public Task<string?> GetConfig(string key);
         public Task<string> GetConfig(string key, string defaultValue);
         public Task<UpdateConfigsResponse> Update(UpdateConfigsRequest request);
@@ -21,50 +21,45 @@ namespace MC.Core.Services
         public async Task<UpdateConfigsResponse> Update(UpdateConfigsRequest request)
         {
             var config = await context.Config.SingleOrDefaultAsync(entity => entity.Key == request.Config.Key);
-            if(config != null) { 
-            
+            if (config != null)
+            {
+
                 config.Value = request.Config.Value;
                 await context.SaveChangesAsync();
             }
             return new UpdateConfigsResponse();
         }
-        public async Task<Dictionary<string, string>> GetConfigs()
+        public async Task<GetConfigsResponse> GetConfigs()
         {
             return await cacheProvider.GetOrCreate(CacheKey, () =>
             {
-                var dataList = context.Config
-                .ToList()
-                .DistinctBy(entity => entity.Key)
-                .ToList();
-
-                var dic = dataList.ToDictionary(entity => entity.Key, entity => entity.Value);
-                return Task.FromResult(dic);
+                var response = new GetConfigsResponse()
+                {
+                    Configs = context.Config
+                        .Select(entity => new MC.Models.Entities.Config()
+                        {
+                            Key = entity.Key,
+                            Value = entity.Value,
+                            Description = entity.Description
+                        })
+                        .ToList()
+                        .DistinctBy(entity => entity.Key)
+                        .ToList()
+                };
+                return Task.FromResult(response);
             });
         }
 
         public async Task<string?> GetConfig(string key)
         {
             var cache = await GetConfigs();
-            if (cache.TryGetValue(key, out string? value))
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
+            var config = cache.Configs.SingleOrDefault(entity => entity.Key == key);
+            return config?.Value;
         }
         public async Task<string> GetConfig(string key, string defaultValue)
         {
-            var cache = await GetConfigs();
-            if (cache.TryGetValue(key, out string? value))
-            {
-                return value;
-            }
-            else
-            {
-                return defaultValue;
-            }
+            var value = await GetConfig(key);
+            return value ?? defaultValue;
         }
 
         public void ClearCache()

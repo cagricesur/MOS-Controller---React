@@ -1,10 +1,12 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using MC.Core.Models;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using System.Net.WebSockets;
 using System.Text;
 
 namespace MC.Core
 {
-    public class WebSocketBackgroundService(IWebSocketManager webSocketManager, IWebSocketMessageManager webSocketMessageManager) : BackgroundService
+    public class WebSocketBackgroundService(IWebSocketManager webSocketManager, IWebSocketMessageManager webSocketMessageManager, IOptions<AppSettings> appSettings) : BackgroundService
     {
         private readonly IWebSocketManager _webSocketManager = webSocketManager;
         private readonly IWebSocketMessageManager _webSocketMessageManager = webSocketMessageManager;
@@ -13,15 +15,15 @@ namespace MC.Core
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await Task.Delay(1000, stoppingToken); // Replace with actual logic to receive messages
+                await Task.Delay(1000, stoppingToken);
                 await Process(stoppingToken);
             }
         }
-
+       
         private async Task Process(CancellationToken stoppingToken)
         {
             var messageContainers = _webSocketMessageManager.GetMessages();
-            await Parallel.ForEachAsync(messageContainers, async (messageContainer, cancellationToken1) =>
+            foreach (var messageContainer in messageContainers)
             {
                 if (messageContainer.Message != null)
                 {
@@ -30,7 +32,7 @@ namespace MC.Core
                         .Where(socketContainer => socketContainer.CreationDate <= messageContainer.CreationDate)
                         .ToList();
 
-                    await Parallel.ForEachAsync(socketContainers, async (socketContainer, cancellationToken2) =>
+                    await Parallel.ForEachAsync(socketContainers, async (socketContainer, cancellationToken) =>
                     {
                         if (socketContainer.WebSocket != null && socketContainer.WebSocket.State == WebSocketState.Open)
                         {
@@ -40,8 +42,8 @@ namespace MC.Core
                     });
                 }
                 _webSocketMessageManager.Remove(messageContainer.ID);
-            });
-
+                await Task.Delay(appSettings.Value.WebSocketDelaySpan, stoppingToken);
+            }
         }
     }
 }

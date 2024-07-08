@@ -31,7 +31,7 @@ const ViewState: React.FunctionComponent = () => {
       const code = `${state.codeStart + index}`;
       const data = { code } as StateData;
       state.columns.forEach((column) => {
-        data[`${column.code}`] = `${code}-${column.code}`;
+        data[`${column.code}`] = `${code}${column.code}`;
       });
       return data;
     });
