@@ -13,11 +13,9 @@ public partial class State
 
     public string Description { get; set; }
 
-    public int CodeStart { get; set; }
-
-    public int CodeEnd { get; set; }
-
     public DateTime CreationDate { get; set; }
 
     public virtual ICollection<StateColumn> StateColumn { get; set; } = new List<StateColumn>();
+
+    public virtual ICollection<StateRow> StateRow { get; set; } = new List<StateRow>();
 }

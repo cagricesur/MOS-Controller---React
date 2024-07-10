@@ -5,19 +5,15 @@ using System.Collections.Generic;
 
 namespace MC.Data.Entities;
 
-public partial class StateColumn
+public partial class StateRow
 {
     public Guid ID { get; set; }
 
     public Guid StateID { get; set; }
 
-    public int Position { get; set; }
+    public int CodeStart { get; set; }
 
-    public string Caption { get; set; }
-
-    public string Color { get; set; }
-
-    public string Code { get; set; }
+    public int CodeEnd { get; set; }
 
     public virtual State State { get; set; }
 }

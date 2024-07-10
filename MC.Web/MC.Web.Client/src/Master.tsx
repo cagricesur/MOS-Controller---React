@@ -4,12 +4,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { ProtectedRoute } from "./components";
 import { theme } from "./theme";
 import "./theme/theme.scss";
-import {
-  fetchStatedData,
-  fetchUsers,
-  fetchConfigs,
-  useAppStore,
-} from "./utils";
+import { fetchStateData, fetchUsers, fetchConfigs, useAppStore } from "./utils";
 
 const Login = React.lazy(() => import("./views/login"));
 const Register = React.lazy(() => import("./views/register"));
@@ -41,7 +36,7 @@ const router = createBrowserRouter([
       {
         path: "/state/:id?",
         element: <State />,
-        loader: fetchStatedData,
+        loader: fetchStateData,
       },
       {
         path: "/configs",

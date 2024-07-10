@@ -20,6 +20,7 @@ namespace MC.Core.Services
         Task<UpdateUserResponse> Update(UpdateUserRequest request);
         Task<GetUserResponse> Get(GetUserRequest request);
         Task<ListUsersResponse> List(ListUsersRequest request);
+        Task<DeleteUserResponse> Delete(DeleteUserRequest request);
     }
     public class UserService(CCSQLContext context, IConfigService configService, IOptions<AppSettings> appSettings) : IUserService
     {
@@ -153,6 +154,42 @@ namespace MC.Core.Services
 
             response.Users.AddRange(users);
 
+            return response;
+        }
+
+        public async Task<DeleteUserResponse> Delete(DeleteUserRequest request)
+        {
+            var response = new DeleteUserResponse();
+            var user = await context.User.SingleOrDefaultAsync(entity => entity.ID == request.ID);
+            if (user != null)
+            {
+                var role = await context.UserRole.SingleOrDefaultAsync(entity => entity.UserID == user.ID);
+                if (role != null && role.Role == (short)UserRoleEnum.Administrator)
+                {
+                    return response;
+                }
+
+
+                var status = await context.UserStatus.SingleOrDefaultAsync(entity => entity.UserID == user.ID);
+                var password = await context.UserPassword.SingleOrDefaultAsync(entity => entity.UserID == user.ID);
+
+
+                if (role != null)
+                {
+                    context.UserRole.Remove(role);  
+                }
+                if (status != null)
+                {
+                    context.UserStatus.Remove(status);
+                }
+                if (password != null)
+                {
+                    context.UserPassword.Remove(password);
+                }
+                await context.SaveChangesAsync();
+                context.User.Remove(user);
+                await context.SaveChangesAsync();
+            }
             return response;
         }
     }

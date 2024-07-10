@@ -9,6 +9,8 @@ public partial class Menu
 {
     public Guid ID { get; set; }
 
+    public Guid? ParentID { get; set; }
+
     public string Caption { get; set; }
 
     public string Path { get; set; }

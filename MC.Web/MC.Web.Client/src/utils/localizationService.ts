@@ -46,7 +46,7 @@ function addResource(
   } as AddResourceRequest;
   Object.entries(payload).forEach((kvp) => {
     request.key = kvp[0];
-    request.value = `${language}_${kvp[1]}`;
+    request.value = `${language}*${kvp[1]}`;
   });
   call<AddResourceResponse>(
     AddResourceAction,

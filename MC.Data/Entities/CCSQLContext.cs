@@ -23,6 +23,8 @@ public partial class CCSQLContext : DbContext
 
     public virtual DbSet<StateColumn> StateColumn { get; set; }
 
+    public virtual DbSet<StateRow> StateRow { get; set; }
+
     public virtual DbSet<User> User { get; set; }
 
     public virtual DbSet<UserPassword> UserPassword { get; set; }
@@ -55,9 +57,7 @@ public partial class CCSQLContext : DbContext
             entity.Property(e => e.Icon)
                 .IsRequired()
                 .HasMaxLength(20);
-            entity.Property(e => e.Path)
-                .IsRequired()
-                .HasMaxLength(10);
+            entity.Property(e => e.Path).HasMaxLength(50);
             entity.Property(e => e.Roles)
                 .IsRequired()
                 .HasMaxLength(20);
@@ -100,11 +100,24 @@ public partial class CCSQLContext : DbContext
             entity.Property(e => e.Code)
                 .IsRequired()
                 .HasMaxLength(10);
+            entity.Property(e => e.Color).HasMaxLength(7);
 
             entity.HasOne(d => d.State).WithMany(p => p.StateColumn)
                 .HasForeignKey(d => d.StateID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_StateColumn_State");
+        });
+
+        modelBuilder.Entity<StateRow>(entity =>
+        {
+            entity.ToTable("StateRow", "MC");
+
+            entity.Property(e => e.ID).ValueGeneratedNever();
+
+            entity.HasOne(d => d.State).WithMany(p => p.StateRow)
+                .HasForeignKey(d => d.StateID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_StateRow_State");
         });
 
         modelBuilder.Entity<User>(entity =>

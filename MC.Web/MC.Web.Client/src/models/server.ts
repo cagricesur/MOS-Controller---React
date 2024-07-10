@@ -1,7 +1,7 @@
 ﻿
 
 
-    // $Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes/Enums/Interfaces(filter)[template][separator]
+    // $Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes$Classes/Enums/Interfaces(filter)[template][separator]
     // filter (optional): Matches the name or full name of the current item. * = match any, wrap in [] to match attributes or prefix with : to match interfaces or base classes.
     // template: The template to repeat for each matched item
     // separator (optional): A separator template that is placed between all templates e.g. [public : ][, ]
@@ -45,25 +45,33 @@
     }
     export interface Menu {
         
+        id:string;
+        parentID?:string;
         caption:string;
-        path:string;
+        path?:string;
         icon:string;
     }
     export interface State {
         
         id:string;
         caption:string;
-        codeStart:number;
-        codeEnd:number;
         description?:string;
+        rows:StateRow[];
         columns:StateColumn[];
         creationDate:Date;
+    }
+    export interface StateRow {
+        
+        id:string;
+        codeStart:number;
+        codeEnd:number;
     }
     export interface StateColumn {
         
         id:string;
         position:number;
         caption:string;
+        color?:string;
         code:string;
     }
     export interface User {
@@ -91,7 +99,6 @@
         firstName:string;
         lastName:string;
         password?:string;
-        status?:UserStatusEnum;
     }
     export interface AuthenticationRequest extends BaseRequest {
         
@@ -99,6 +106,10 @@
         password:string;
     }
     export interface DeleteStateRequest extends BaseRequest {
+        
+        id:string;
+    }
+    export interface DeleteUserRequest extends BaseRequest {
         
         id:string;
     }
@@ -168,6 +179,9 @@
         tokenExpiration?:Date;
     }
     export interface DeleteStateResponse extends BaseResponse {
+        
+    }
+    export interface DeleteUserResponse extends BaseResponse {
         
     }
     export interface GetConfigsResponse extends BaseResponse {

@@ -26,7 +26,5 @@ namespace MC.Models.Request
         [MaxLength(10)]
         [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,10}$")]
         public string? Password { get; set; }
-
-        public UserStatusEnum? Status { get; set; }
     }
 }

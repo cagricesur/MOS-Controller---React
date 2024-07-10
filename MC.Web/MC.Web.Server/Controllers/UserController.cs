@@ -43,6 +43,13 @@ namespace MC.Web.Server.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public Task<DeleteUserResponse> Delete(DeleteUserRequest request)
+        {
+            return userService.Delete(request);
+        }
+
+        [HttpPost]
         [AllowAnonymous]
         public Task<AddUserResponse> Add(AddUserRequest request)
         {

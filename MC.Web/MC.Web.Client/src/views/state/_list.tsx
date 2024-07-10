@@ -76,9 +76,12 @@ const StateList: React.FunctionComponent = () => {
         {state.description && (
           <Typography.Text ellipsis>{state.description}</Typography.Text>
         )}
-        <div>{`${date.format("DD MMM YYYY")} | ${state.codeStart} - ${
-          state.codeEnd
-        }`}</div>
+        {i18n.language === "tr" && (
+          <div>{`${date.format("DD MMM YYYY HH:mm:ss")}`}</div>
+        )}
+        {i18n.language === "en" && (
+          <div>{`${date.format("MMM DD YYYY HH:mm:ss")}`}</div>
+        )}
       </Flex>
     );
   };

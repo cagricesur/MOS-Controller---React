@@ -1,4 +1,5 @@
 import {
+  App,
   Badge,
   Button,
   Card,
@@ -12,9 +13,10 @@ import {
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FaUserCircle } from "react-icons/fa";
-import { FaCheck, FaPen, FaUser, FaX } from "react-icons/fa6";
+import { FaCheck, FaPen, FaTrash, FaUser, FaX } from "react-icons/fa6";
 import { useLoaderData } from "react-router-dom";
 import {
+  DeleteUserRequest,
   ListUsersResponse,
   UpdateUserRequest,
   UpdateUserResponse,
@@ -22,6 +24,7 @@ import {
   UserStatusEnum,
 } from "../../models";
 import { HttpService } from "../../utils";
+import _ from "lodash";
 
 interface UserStatusSwitchProps {
   user: User;
@@ -56,6 +59,7 @@ const UserDetail: React.FunctionComponent<UserDetailProps> = (props) => {
           setUser({ status: _status, ...rest });
         }}
       ></UserStatusSwitch>
+
       <Flex gap={16} style={{ width: "100%", marginTop: "30px" }}>
         <Button
           block
@@ -64,7 +68,6 @@ const UserDetail: React.FunctionComponent<UserDetailProps> = (props) => {
             props.onCancel();
           }}
         ></Button>
-
         <Button
           block
           icon={<FaCheck color="#008b00" />}
@@ -105,7 +108,7 @@ const Users: React.FunctionComponent = () => {
   const [user, setUser] = useState<User | undefined>(undefined);
   const [users, setUsers] = useState<User[]>(response.users);
   const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
-
+  const { modal } = App.useApp();
   const { t } = useTranslation();
 
   return (
@@ -184,11 +187,46 @@ const Users: React.FunctionComponent = () => {
                       return false;
                     }}
                     actions={[
-                      <Button
-                        size="large"
-                        shape="circle"
-                        icon={<FaPen size={18} color="#00008b" />}
-                      ></Button>,
+                      <Flex
+                        style={{ flex: "auto" }}
+                        gap={32}
+                        justify="center"
+                        align="center"
+                      >
+                        <Button
+                          size="large"
+                          shape="circle"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            modal.confirm({
+                              content: t("UserList*Delete*Content"),
+                              okType: "danger",
+                              okText: t("UserList*Delete*OkButton"),
+                              cancelText: t("UserList*Delete*CancelButton"),
+
+                              onOk: async () => {
+                                const request: DeleteUserRequest = {
+                                  id: user.id,
+                                };
+                                await HttpService.post(
+                                  "api/user/delete",
+                                  request
+                                );
+                                const _users = [...users];
+                                _.remove(_users, (u) => u.id === user.id);
+                                setUsers(_users);
+                              },
+                            });
+                            return false;
+                          }}
+                          icon={<FaTrash size={18} color="#8b0000" />}
+                        ></Button>
+                        <Button
+                          size="large"
+                          shape="circle"
+                          icon={<FaPen size={18} color="#00008b" />}
+                        ></Button>
+                      </Flex>,
                     ]}
                   >
                     <Card.Meta

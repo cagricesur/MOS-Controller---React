@@ -39,13 +39,11 @@ namespace MC.Core.Services
                             ID = entity.ID,
                             Caption = entity.Caption,
                             Description = entity.Description,
-                            CodeStart = entity.CodeStart,
-                            CodeEnd = entity.CodeEnd,
                             CreationDate = entity.CreationDate,
+                            Rows = [],
                             Columns = []
                         })
                         .OrderByDescending(entity => entity.CreationDate)
-,
                 ],
             };
         }
@@ -55,37 +53,42 @@ namespace MC.Core.Services
 
             var response = new AddStateResponse();
 
-            if (request.State.CodeStart < 1 || request.State.CodeEnd < request.State.CodeStart)
-            {
-                response.CreateError(Constants.ErrorCodes.InvalidStateCodeRange);
-            }
-            else
-            {
-                var stateId = Guid.NewGuid();
-                context.State.Add(new State()
-                {
-                    ID = stateId,
-                    Caption = request.State.Caption,
-                    Description = request.State.Description,
-                    CodeStart = request.State.CodeStart,
-                    CodeEnd = request.State.CodeEnd,
-                    CreationDate = DateTime.UtcNow
-                });
-                await context.SaveChangesAsync();
 
-                foreach (var column in request.State.Columns)
+            var stateId = Guid.NewGuid();
+            context.State.Add(new State()
+            {
+                ID = stateId,
+                Caption = request.State.Caption,
+                Description = request.State.Description,
+                CreationDate = DateTime.UtcNow
+            });
+            await context.SaveChangesAsync();
+
+            foreach (var row in request.State.Rows)
+            {
+                context.StateRow.Add(new StateRow()
                 {
-                    context.StateColumn.Add(new StateColumn()
-                    {
-                        ID = Guid.NewGuid(),
-                        StateID = stateId,
-                        Caption = column.Caption,
-                        Code = column.Code,
-                        Position = column.Position,
-                    });
-                }
-                await context.SaveChangesAsync();
+                    ID = Guid.NewGuid(),
+                    StateID = stateId,
+                    CodeStart = row.CodeStart,
+                    CodeEnd = row.CodeEnd,
+                });
             }
+
+            foreach (var column in request.State.Columns)
+            {
+                context.StateColumn.Add(new StateColumn()
+                {
+                    ID = Guid.NewGuid(),
+                    StateID = stateId,
+                    Caption = column.Caption,
+                    Code = column.Code,
+                    Color = column.Color,
+                    Position = column.Position,
+                });
+            }
+            await context.SaveChangesAsync();
+
             return response;
 
         }
@@ -97,16 +100,23 @@ namespace MC.Core.Services
             var state = await context.State.SingleOrDefaultAsync(entity => entity.ID == request.ID);
             if (state != null)
             {
+                var rows = await context.StateRow.Where(entity => entity.StateID == state.ID).ToListAsync();
                 var columns = await context.StateColumn.Where(entity => entity.StateID == state.ID).ToListAsync();
 
                 response.State = new MC.Models.Entities.State()
                 {
                     ID = state.ID,
                     Caption = state.Caption,
-                    Description= state.Description,
-                    CodeEnd = state.CodeEnd,
-                    CodeStart = state.CodeStart,
+                    Description = state.Description,
                     CreationDate = state.CreationDate,
+                    Rows = [
+                        .. rows.Select(entity => new MC.Models.Entities.StateRow()
+                        {
+                            ID = entity.ID,
+                            CodeStart = entity.CodeStart,
+                            CodeEnd = entity.CodeEnd,
+                        }).OrderBy(entity=> entity.CodeStart)
+                    ],
                     Columns =
                     [
                         .. columns.Select(entity => new MC.Models.Entities.StateColumn()
@@ -115,6 +125,7 @@ namespace MC.Core.Services
                             Caption = entity.Caption,
                             Code = entity.Code,
                             Position = entity.Position,
+                            Color = entity.Color,
                         }).OrderBy(entity => entity.Position),
                     ],
                 };
@@ -134,10 +145,6 @@ namespace MC.Core.Services
             {
                 response.CreateError(Constants.ErrorCodes.StateIDMismatch);
             }
-            else if (request.State.CodeStart < 1 || request.State.CodeEnd < request.State.CodeStart)
-            {
-                response.CreateError(Constants.ErrorCodes.InvalidStateCodeRange);
-            }
             else
             {
                 var state = await context.State.SingleOrDefaultAsync(entity => entity.ID == request.ID);
@@ -152,6 +159,17 @@ namespace MC.Core.Services
                         await context.SaveChangesAsync();
                     }
 
+                    foreach (var rows in request.State.Rows)
+                    {
+                        context.StateRow.Add(new StateRow()
+                        {
+                            ID = Guid.NewGuid(),
+                            StateID = state.ID,
+                            CodeStart = rows.CodeStart,
+                            CodeEnd = rows.CodeEnd,
+                        });
+                    }
+
                     foreach (var column in request.State.Columns)
                     {
                         context.StateColumn.Add(new StateColumn()
@@ -160,13 +178,12 @@ namespace MC.Core.Services
                             StateID = state.ID,
                             Caption = column.Caption,
                             Code = column.Code,
+                            Color = column.Color,
                             Position = column.Position,
                         });
                     }
 
 
-                    state.CodeStart = request.State.CodeStart;
-                    state.CodeEnd = request.State.CodeEnd;
                     state.Caption = request.State.Caption;
                     state.Description = request.State.Description;
                     state.CreationDate = DateTime.UtcNow;
@@ -183,12 +200,26 @@ namespace MC.Core.Services
             var state = await context.State.SingleOrDefaultAsync(entity => entity.ID == request.ID);
             if (state != null)
             {
+                var rows = await context.StateRow.Where(entity => entity.StateID == state.ID).ToListAsync();
                 var columns = await context.StateColumn.Where(entity => entity.StateID == state.ID).ToListAsync();
+
+                bool hasChange = false;
+
+                if (rows.Count > 0)
+                {
+                    hasChange = true;
+                    context.StateRow.RemoveRange(rows);
+                }
                 if (columns.Count > 0)
                 {
+                    hasChange = true;
                     context.StateColumn.RemoveRange(columns);
+                }
+                if (hasChange)
+                {
                     await context.SaveChangesAsync();
                 }
+
                 context.State.Remove(state);
                 await context.SaveChangesAsync();
             }

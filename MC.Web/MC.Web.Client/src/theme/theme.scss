@@ -20,6 +20,10 @@ body {
     display: flex;
     .mc-app-title {
       font-family: "Lilita One";
+      background: -webkit-linear-gradient(rgb(0, 255, 239), rgb(0, 105, 148));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
   }
   .mc-content {
@@ -110,6 +114,19 @@ body {
 .sortable-item-content {
   cursor: pointer !important;
   justify-content: flex-start;
+  &.dark {
+    span {
+      color: #e3e3e3;
+    }
+  }
+}
+
+.state-view-header-button {
+  &.dark {
+    span {
+      color: #e3e3e3;
+    }
+  }
 }
 
 .state-list,
@@ -137,5 +154,13 @@ body {
     h5 {
       margin: 0;
     }
+  }
+}
+
+.mc-menu {
+  .ant-menu {
+    border: none !important;
+    padding: 0;
+    width: 100%;
   }
 }

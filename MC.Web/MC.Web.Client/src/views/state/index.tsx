@@ -1,14 +1,22 @@
 import React from "react";
 import { useParams } from "react-router-dom";
+import { isGuid } from "../../utils";
 
-const NewState = React.lazy(() => import("./_new"));
+const NewState = React.lazy(() => import("./new"));
 const StateList = React.lazy(() => import("./_list"));
-const ViewState = React.lazy(() => import("./_view"));
+const ViewState = React.lazy(() => import("./view"));
 
 const State: React.FunctionComponent = () => {
   const { id } = useParams();
-  return (
-    <>{id ? id === "new" ? <NewState /> : <ViewState /> : <StateList />}</>
-  );
+
+  if (id) {
+    if (isGuid(id)) {
+      return <ViewState />;
+    } else {
+      return <NewState />;
+    }
+  } else {
+    return <StateList />;
+  }
 };
 export default State;
