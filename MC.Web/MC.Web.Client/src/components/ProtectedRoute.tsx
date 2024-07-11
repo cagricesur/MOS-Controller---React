@@ -39,7 +39,6 @@ export const ProtectedRoute: React.FunctionComponent = () => {
               <div ref={contentRef}>
                 <Drawer
                   open={openMenu}
-                  destroyOnClose
                   onClose={() => toggleMenu(false)}
                   closeIcon={false}
                   mask={false}

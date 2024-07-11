@@ -7,7 +7,6 @@ import * as Icons from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { GetMenusResponse, Menu as MenuModel } from "../models";
 import { HttpService, useAppStore } from "../utils";
-import { nanoid } from "nanoid";
 
 interface MenuProps {
   onMenuClick: () => void;
@@ -59,7 +58,7 @@ export const Menu: React.FunctionComponent<MenuProps> = (props) => {
     [t]
   );
 
-  useEffect(() => {
+  const fetchMenu = useCallback(() => {
     if (isProtected) {
       HttpService.get<GetMenusResponse>("/api/app/getmenus").then(
         (response) => {
@@ -88,6 +87,10 @@ export const Menu: React.FunctionComponent<MenuProps> = (props) => {
       );
     }
   }, [getMenu, isProtected, t]);
+
+  useEffect(() => {
+    fetchMenu();
+  }, [fetchMenu]);
   return (
     <AntdMenu
       mode="inline"
@@ -101,7 +104,7 @@ export const Menu: React.FunctionComponent<MenuProps> = (props) => {
           const _menu = menus.find((m) => m.id === menu.key);
           if (_menu && _menu.path) {
             props.onMenuClick();
-            nav(_menu.path, { state: nanoid() });
+            nav(_menu.path);
           }
         }
       }}

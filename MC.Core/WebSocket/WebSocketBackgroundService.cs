@@ -1,4 +1,6 @@
 ﻿using MC.Core.Models;
+using MC.Core.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using System.Net.WebSockets;
@@ -6,10 +8,13 @@ using System.Text;
 
 namespace MC.Core
 {
-    public class WebSocketBackgroundService(IWebSocketManager webSocketManager, IWebSocketMessageManager webSocketMessageManager, IOptions<AppSettings> appSettings) : BackgroundService
+    public class WebSocketBackgroundService(IServiceScopeFactory scopeFactory, IWebSocketManager webSocketManager, IWebSocketMessageManager webSocketMessageManager) : BackgroundService
     {
+        private readonly IServiceScopeFactory _scopeFactory = scopeFactory;
         private readonly IWebSocketManager _webSocketManager = webSocketManager;
         private readonly IWebSocketMessageManager _webSocketMessageManager = webSocketMessageManager;
+
+
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -19,7 +24,18 @@ namespace MC.Core
                 await Process(stoppingToken);
             }
         }
-       
+
+        private async Task<TimeSpan> GetWait()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var configService = scope.ServiceProvider.GetRequiredService<IConfigService>();
+            var wait = await configService.GetConfig("WebSocketWait", "100");
+            if (!int.TryParse(wait, out int delay))
+            {
+                delay = 100;
+            }
+            return TimeSpan.FromMilliseconds(delay);
+        }
         private async Task Process(CancellationToken stoppingToken)
         {
             var messageContainers = _webSocketMessageManager.GetMessages();
@@ -42,7 +58,8 @@ namespace MC.Core
                     });
                 }
                 _webSocketMessageManager.Remove(messageContainer.ID);
-                await Task.Delay(appSettings.Value.WebSocketDelaySpan, stoppingToken);
+                var delay = await GetWait();
+                await Task.Delay(delay, stoppingToken);
             }
         }
     }
